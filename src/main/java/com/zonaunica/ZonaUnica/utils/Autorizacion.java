@@ -9,8 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 
 @Component
 public class Autorizacion implements Filter{
@@ -47,22 +49,19 @@ public class Autorizacion implements Filter{
                 Jws<Claims> claims= Jwts.parser().setSigningKey(KEY).parseClaimsJws(hash);
                 //Rutas Privadas
                 if(url.contains("/api/municipios") || url.contains("/api/sitios") || 
-                url.contains("/api/platos") || url.contains("/api/verificar")){
+                url.contains("/api/platos") || url.contains("/api/verificar") || url.contains("/api/platos/{id}")){
                     chain.doFilter(request, response);
                 }
-            } catch (Exception e) {
-                    System.out.println(e);
-            }
-            /*
-            } 
-            catch (MalformedJwtException e) {
+            } catch (MalformedJwtException e) {
                 response.setContentType("application/json");
                 String body = "{\"autorizacion\":\"TOKEN NO VALIDO\"}";
                 response.getWriter().write(body);
             } catch(ExpiredJwtException e){
                 System.out.println(" Token expired ");
+            } catch (Exception e) {
+                    System.out.println(e);
             }
-        */
+         
         }
     }
     
